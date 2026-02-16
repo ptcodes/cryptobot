@@ -1,5 +1,4 @@
 use anyhow::{Context, Result};
-use chrono::Utc;
 use serde::Deserialize;
 use teloxide::prelude::*;
 use teloxide::types::{ChatId, Recipient};
@@ -34,17 +33,6 @@ async fn fetch_bitcoin_price() -> Result<f64> {
         .context("Failed to parse CoinPaprika API response")?;
 
     Ok(data.quotes.usd.price)
-}
-
-/// Formats the price message with timestamp
-fn format_price_message(price: f64) -> String {
-    let timestamp = Utc::now().format("%Y-%m-%d %H:%M:%S UTC");
-    format!(
-        "🪙 <b>Bitcoin Price Update</b>\n\n\
-        💰 Current Price: <b>${:.2}</b>\n\
-        🕒 Updated: {}",
-        price, timestamp
-    )
 }
 
 /// Parses channel ID from string (supports both @username and numeric formats)
@@ -84,10 +72,8 @@ async fn main() -> Result<()> {
         .await
         .context("Failed to fetch Bitcoin price")?;
 
-    println!("💰 Current Bitcoin price: ${:.2}", price);
-
-    // Format message
-    let message = format_price_message(price);
+    let message = format!("💰 Current Bitcoin Price: ${:.0}", price);
+    println!("{}", message);
 
     println!("📤 Sending message to Telegram channel: {}", channel_id_str);
 
