@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use rusty_money::{iso, Money};
 use serde::Deserialize;
 use teloxide::prelude::*;
 use teloxide::types::{ChatId, Recipient};
@@ -72,7 +73,10 @@ async fn main() -> Result<()> {
         .await
         .context("Failed to fetch Bitcoin price")?;
 
-    let message = format!("💰 Current Bitcoin Price: ${:.0}", price);
+    // Make the price look nicer
+    let amount = Money::from_major(price as i64, iso::USD);
+
+    let message = format!("💰 Current Bitcoin Price: {}", amount);
     println!("{}", message);
 
     println!("📤 Sending message to Telegram channel: {}", channel_id_str);
