@@ -11,6 +11,7 @@ struct ApiResponse {
 
 #[derive(Deserialize, Debug)]
 struct Quote {
+    #[serde(rename = "USD")]
     usd: UsdQuote,
 }
 
@@ -19,18 +20,18 @@ struct UsdQuote {
     price: f64,
 }
 
-/// Fetches the current Bitcoin price from Coin Paprika API
+/// Fetches the current Bitcoin price from CoinPaprika API
 async fn fetch_bitcoin_price() -> Result<f64> {
     let url = "https://api.coinpaprika.com/v1/tickers/btc-bitcoin";
 
     let response = reqwest::get(url)
         .await
-        .context("Failed to fetch Bitcoin price from Coin Paprika API")?;
+        .context("Failed to fetch Bitcoin price from CoinPaprika API")?;
 
     let data: ApiResponse = response
         .json()
         .await
-        .context("Failed to parse Coin Paprika API response")?;
+        .context("Failed to parse CoinPaprika API response")?;
 
     Ok(data.quotes.usd.price)
 }
