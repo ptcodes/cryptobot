@@ -1,11 +1,12 @@
-# Bitcoin Telegram Price Bot 🪙
+# Crypto Telegram Price Bot 🪙
 
-A Rust-based Telegram bot that automatically posts Bitcoin price updates to a Telegram channel every hour using GitHub Actions.
+A Rust-based Telegram bot that automatically posts cryptocurrency price updates to a Telegram channel every hour using GitHub Actions. Currently tracks Bitcoin and Solana, with easy extensibility for additional cryptocurrencies.
 
 ## Features
 
 - 🔄 **Automated hourly updates** via GitHub Actions
-- 💰 **Real-time Bitcoin prices** from CoinPaprika API
+- 💰 **Multi-coin support** - Bitcoin, Solana, and easily extensible to other coins
+- 📊 **Real-time prices** from CoinPaprika API
 - 📱 **Clean formatted messages** with emoji and HTML formatting
 - 🚀 **Simple deployment** - no server required
 - 🔒 **Secure** - credentials stored in GitHub Secrets
@@ -14,8 +15,8 @@ A Rust-based Telegram bot that automatically posts Bitcoin price updates to a Te
 ## How It Works
 
 1. GitHub Actions triggers the bot every hour via cron schedule
-2. Bot fetches the current Bitcoin price from CoinPaprika API
-3. Formats a nice message with price and timestamp
+2. Bot fetches current prices for all configured cryptocurrencies from CoinPaprika API
+3. Formats a nice message with prices for each coin
 4. Sends the message to your configured Telegram channel
 5. Exits (no continuous running process needed)
 
@@ -40,7 +41,7 @@ A Rust-based Telegram bot that automatically posts Bitcoin price updates to a Te
 
 ```bash
 git clone <your-repo-url>
-cd bot
+cd cryptobot
 ```
 
 ### 4. Configure GitHub Secrets
@@ -78,12 +79,12 @@ cargo run --release
 ## Project Structure
 
 ```
-bot/
+cryptobot/
 ├── Cargo.toml                 # Project dependencies
 ├── .env                       # Local environment variables (gitignored)
 ├── .gitignore                 # Git ignore rules
 ├── src/
-│   └── main.rs               # Main bot logic
+│   └── main.rs               # Main bot logic (coin configuration on line 105)
 ├── .github/
 │   └── workflows/
 │       └── hourly-update.yml  # GitHub Actions workflow
@@ -147,24 +148,43 @@ on:
 - **serde/serde_json**: JSON serialization
 - **anyhow**: Error handling
 - **dotenv**: Environment variable loading
-- **chrono**: Timestamp formatting
+- **rusty-money** (0.5): Currency formatting
 
 ## API Information
 
 ### CoinPaprika API
 
-- **Endpoint**: `https://api.coinpaprika.com/v1/tickers/btc-bitcoin`
+- **Endpoint**: `https://api.coinpaprika.com/v1/tickers/{coin-id}`
 - **Rate Limit**: 10-30 calls/minute (free tier)
 - **No authentication required**
 - **Documentation**: https://coinpaprika.com/api
 
+### Currently Tracked Coins
+
+- **Bitcoin (BTC)** - ID: `btc-bitcoin`
+- **Solana (SOL)** - ID: `sol-solana`
+
+### Adding More Coins
+
+To add support for additional cryptocurrencies:
+
+1. Find the coin ID from [CoinPaprika](https://coinpaprika.com) (format: `{symbol}-{name}`)
+2. Open `src/main.rs`
+3. Add the coin ID to the `coins` array on line 105:
+
+```rust
+let coins = ["btc-bitcoin", "sol-solana", "eth-ethereum"]; // Add your coin here
+```
+
+4. Commit and push your changes - the bot will automatically track the new coin!
+
 ## Future Enhancements
 
-Potential improvements (not implemented):
+Potential improvements:
 
+- [x] Support multiple cryptocurrencies ✅
 - [ ] Price change percentage (24h)
 - [ ] Price alerts for thresholds
-- [ ] Support multiple cryptocurrencies
 - [ ] Historical price charts
 - [ ] Price trend indicators
 - [ ] Store price history

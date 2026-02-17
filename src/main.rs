@@ -24,15 +24,14 @@ struct UsdQuote {
 
 #[derive(Debug)]
 struct Coin {
-    name: String,
     symbol: String,
     price: f64,
 }
 
 /// Fetches a coin price from CoinPaprika API
-async fn fetch_coin_info(coin_name: &str) -> Result<Coin> {
+async fn fetch_coin_info(coin_symbol: &str) -> Result<Coin> {
     let url = "https://api.coinpaprika.com/v1/tickers/";
-    let url = format!("{}{}", url, coin_name);
+    let url = format!("{}{}", url, coin_symbol);
 
     let response = reqwest::get(url)
         .await
@@ -44,7 +43,6 @@ async fn fetch_coin_info(coin_name: &str) -> Result<Coin> {
         .context("Failed to parse CoinPaprika API response")?;
 
     let coin = Coin {
-        name: data.name,
         symbol: data.symbol,
         price: data.quotes.usd.price,
     };
