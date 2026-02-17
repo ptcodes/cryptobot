@@ -1,4 +1,4 @@
-name: Hourly Bitcoin Price Update
+name: Hourly Coin Prices Update
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Allow manual trigger for testing
 
 jobs:
-  send-bitcoin-price:
+  send-crypto-prices:
     runs-on: ubuntu-latest
 
     steps:
@@ -51,13 +51,3 @@ jobs:
           TELOXIDE_TOKEN: ${{ secrets.TELOXIDE_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
         run: cargo run --release
-
-      - name: Report status
-        if: always()
-        run: |
-          if [ $? -eq 0 ]; then
-            echo "✅ Bitcoin price update sent successfully!"
-          else
-            echo "❌ Failed to send Bitcoin price update"
-            exit 1
-          fi
