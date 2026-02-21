@@ -76,7 +76,7 @@ async fn send_message_to_telegram(bot_token: &str, channel_id: &str, message: &s
 
 fn construct_message(coin: &Coin) -> String {
     let amount = Money::from_minor((coin.price * 100.0).round() as i64, iso::USD);
-    format!("💰 {} Price: {}\n", coin.symbol, amount)
+    format!("{}: {}\n", coin.symbol, amount)
 }
 
 #[tokio::main]
